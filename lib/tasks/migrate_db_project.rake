@@ -5,6 +5,7 @@ end
 namespace :migrate do
   desc "Clears all files in tmp/sessions"
   task :project do
+    binding.pry
     # Darwin
     mapfre_darwin_cart = Mapfre::DarvinCart.new(uuid: SecureRandom.uuid, inserted_at: DateTime.now.utc)
     
@@ -38,55 +39,33 @@ namespace :migrate do
       fipe: fipe.insert(6, '-'),
       manufacturing_year: manufacturing_year,
       model_year: model_year
-    ).vehicle
+    ).vehicle  
 
-    # data_base_calculo:      
-    # codfipe:                
-    # codmarca:              
-    # anomodelo:             
-    # cod_renovacao:         
-    # cep:                   
-    # cod_alienado:          
-    # cod_tipo_pessoa:        
-    # cod_condutor:           
-    # cod_estado_civil:       
-    # cod_habilitacao:        
-    # cod_sexo:               
-    # cod_idade:              
-    # cod_garagem:            
-    # cod_uso:                
-    # val_score:              
-    # val_km_telemetria:      
-    # ind_vidros:            
-    # ind_kitgas:            
-    # ind_blindagem:         
-    # assinatura_generalli:   
-    # vlkm_generalli:  
 
     calculation_mapfre = Services::Thinkhub::Calculation.new(
-      data_base_calculo: generali_hawking_contract     
-      codfipe: generali_hawking_contract
-      codmarca: generali_hawking_contract              
-      anomodelo: generali_hawking_contract
-      cod_renovacao: generali_hawking_contract
-      cep: generali_hawking_contract   
-      cod_alienado: generali_hawking_contract 
-      cod_tipo_pessoa: generali_hawking_contract
-      cod_condutor: generali_hawking_contract  
-      cod_estado_civil: generali_hawking_contract
-      cod_habilitacao: generali_hawking_contract
-      cod_sexo: generali_hawking_contract  
-      cod_idade: generali_hawking_contract 
-      cod_garagem: generali_hawking_contract   
-      cod_uso: generali_hawking_contract
-      val_score: generali_hawking_contract 
-      val_km_telemetria: generali_hawking_contract
-      ind_vidros: generali_hawking_contract   
-      ind_kitgas: generali_hawking_contract   
-      ind_blindagem: generali_hawking_contract 
-      assinatura_generalli:generali_hawking_contract
+      data_base_calculo: DateTime.now.to_i,     
+      codfipe: fipe,
+      codmarca: vehicle["model_code"],              
+      anomodelo: model_year,
+      cod_renovacao: 0,?
+      cep: generali_hawking_contract[:hiring_data]["insured"]["address"]["zip_code"].gsub("-", ""),   
+      cod_alienado: generali_hawking_contract, ?
+      cod_tipo_pessoa: 2,
+      cod_condutor: generali_hawking_contract,  
+      cod_estado_civil: code_marital_status(generali_hawking_contract[:hiring_data]["insured"]["marital_status"]),
+      cod_habilitacao: generali_hawking_contract,
+      cod_sexo: generali_hawking_contract,  
+      cod_idade: generali_hawking_contract, 
+      cod_garagem: generali_hawking_contract,   
+      cod_uso: generali_hawking_contract,
+      val_score: generali_hawking_contract, 
+      val_km_telemetria: generali_hawking_contract,
+      ind_vidros: generali_hawking_contract,   
+      ind_kitgas: generali_hawking_contract,   
+      ind_blindagem: generali_hawking_contract, 
+      assinatura_generalli:generali_hawking_contract,
       vlkm_generalli: generali_hawking_contract  
-    ).migration
+    ).calculation
   
     generali_hawking_contract[:hiring_data]["insured_item"]["insurer_properties"]["insurer_model_code"] = vehicle["model_code"]
     generali_hawking_contract[:hiring_data]["core"]["cart_uuid"] = mapfre_darwin_cart.uuid
@@ -168,5 +147,18 @@ namespace :migrate do
     mapfre_darwin_cart.save!
   
     p "http://darwin-ppu-dot-sandbox-cluster-test.uc.r.appspot.com/carts/#{mapfre_darwin_cart.id}/quotation"
+  end
+
+  private
+
+  def code_marital_status status
+    marital = {
+      "SINGLE"   => 1,
+      "MARRIED"  => 2,
+      "WIDOWER"  => 3,
+      "DIVORCED" => 4
+    }
+
+    marital[status]
   end
 end
