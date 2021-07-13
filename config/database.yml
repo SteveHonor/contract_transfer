@@ -1,0 +1,26 @@
+development_mapfre:
+  adapter: postgresql
+  encoding: unicode
+  database: hawking_ppu_sandbox
+  username: postgres
+  password: pDyAP1mri3I5PMP6
+  host: 104.154.103.143
+  pool: 5
+
+development_darwin:
+  adapter: postgresql
+  encoding: unicode
+  database: darwin_ppu_sandbox
+  username: postgres
+  password: pDyAP1mri3I5PMP6
+  host: 104.154.103.143
+  pool: 5
+
+development_generali:
+  adapter: postgresql
+  encoding: unicode
+  database: darwin_ppu_staging
+  username: thinkseg
+  password: ilovethinkseg
+  host: 173.255.113.163
+  pool: 5
